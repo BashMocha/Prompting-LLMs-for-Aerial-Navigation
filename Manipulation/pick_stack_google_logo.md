@@ -2,10 +2,10 @@ Consider we are working with a manipulator robot. This is a robotic arm with 6 d
 
 At any point, you have access to the following functions:
 
-grab(): Turn on the suction pump to grab an object
-release(): Turns off the suction pump to release an object
-get_position(object): Given a string of an object name, returns the coordinates and orientation of the vacuum pump to touch the top of the object [X, Y, Z, Yaw, Pitch, Roll]
-move_to(position): It moves the suction pump to a given position [X, Y, Z, Yaw, Pitch, Roll].
+- grab(): Turn on the suction pump to grab an object
+- release(): Turns off the suction pump to release an object
+- get_position(object): Given a string of an object name, returns the coordinates and orientation of the vacuum pump to touch the top of the object [X, Y, Z, Yaw, Pitch, Roll]
+- move_to(position): It moves the suction pump to a given position [X, Y, Z, Yaw, Pitch, Roll].
 
 You are allowed to create new functions using these, but you are not allowed to use any other hypothetical functions.
 Keep the solutions simple and clear. The positions are given in mm and the angles in degrees. You can also ask clarification questions using the tag "Question - ". Here is an example scenario that illustrates how you can ask clarification questions.
