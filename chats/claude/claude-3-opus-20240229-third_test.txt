@@ -1,0 +1,310 @@
+user: 
+move 10 units up
+
+<------>
+
+assistant: 
+```python
+    aw.fly_to([aw.get_drone_position()[0], aw.get_drone_position()[1], aw.get_drone_position()[2]+10])
+    ```
+
+    This code uses the `fly_to()` function to move the drone to a new position that is 10 units up from the current position. It does this by getting the current position of the drone using `get_drone_position()` and then creating a new list with the same X and Y coordinates, but with the Z coordinate increased by 10. The drone will then fly to this new position using `fly_to()`.
+
+<------>
+
+user: 
+Here are some functions you can use to command the drone.
+
+aw.takeoff() - takes off the drone.
+aw.land() - lands the drone.
+aw.get_drone_position() - returns the current position of the drone as a list of 3 floats corresponding to XYZ coordinates.
+aw.fly_to([x, y, z]) - flies the drone to the position specified as a list of three arguments corresponding to X, Y, Z coordinates.
+aw.fly_path(points) - flies the drone along the path specified by the list of points. Each point is again a list of 3 floats corresponding to X, Y, Z coordinates.
+aw.set_yaw(yaw) - sets the yaw of the drone to the specified value in degrees.
+aw.get_yaw() - returns the current yaw of the drone in degrees.
+aw.get_position(object_name): Takes a string as input indicating the name of an object of interest, and returns a list of 3 floats indicating its X,Y,Z coordinates.
+
+A few useful things: 
+Instead of moveToPositionAsync() or moveToZAsync(), you should use the function fly_to() that I have defined for you.
+If you are uncertain about something, you can ask me a clarification question, as long as you specifically identify it saying "Question".
+Here is an example scenario that illustrates how you can ask clarification questions. Let us assume a scene contains two spheres.
+
+Me: Fly to the sphere.
+You: Question - there are two spheres. Which one do you want me to fly to?
+Me: Sphere 1, please.
+
+The following objects are in the scene, and you are to refer to them using these exact names:
+
+turbine1, turbine2, solarpanels, car, crowd, tower1, tower2, tower3.
+
+None of the objects except for the drone itself are movable. Remember that there are two turbines, and three towers. When there are multiple objects of a same type,
+and if I don't specify explicitly which object I am referring to, you should always ask me for clarification. Never make assumptions.
+
+In terms of axis conventions, forward means positive X axis. Right means positive Y axis. Up means positive Z axis.
+
+<------>
+
+assistant: 
+Understood. I will use only the functions you have provided, ask clarification questions when needed, and refer to the objects in the scene using the names you specified. Please let me know what you would like me to do with the drone.
+
+<------>
+
+user: 
+I want you to perform multiple tasks in an order, one by one. Take off, fly up 30 meters, and fly 20 meters forward. Rotate the drone 180 degrees and then, fly 20 meters forward to return your original position.
+
+<------>
+
+assistant: 
+Here's the Python code to perform the tasks you described:
+
+```python
+# Take off
+aw.takeoff()
+
+# Fly up 30 meters
+aw.fly_to([aw.get_drone_position()[0], aw.get_drone_position()[1], aw.get_drone_position()[2] + 30])
+
+# Fly 20 meters forward (positive X direction)
+aw.fly_to([aw.get_drone_position()[0] + 20, aw.get_drone_position()[1], aw.get_drone_position()[2]])
+
+# Rotate the drone 180 degrees
+aw.set_yaw(aw.get_yaw() + 180)
+
+# Fly 20 meters forward to return to the original position
+aw.fly_to([aw.get_drone_position()[0] + 20, aw.get_drone_position()[1], aw.get_drone_position()[2]])
+```
+
+Explanation:
+1. The `aw.takeoff()` function is called to make the drone take off.
+
+2. The `aw.fly_to()` function is used to fly the drone up by 30 meters. It gets the current position using `aw.get_drone_position()` and adds 30 to the Z coordinate to move the drone up.
+
+3. The `aw.fly_to()` function is used again to fly the drone 20 meters forward (in the positive X direction). It gets the current position and adds 20 to the X coordinate.
+
+4. The `aw.set_yaw()` function is used to rotate the drone by 180 degrees. It gets the current yaw using `aw.get_yaw()` and adds 180 to it.
+
+5. Finally, the `aw.fly_to()` function is used once more to fly the drone 20 meters forward (in the positive X direction) to return to the original position. It gets the current position and adds 20 to the X coordinate.
+
+This code will make the drone take off, fly up 30 meters, fly 20 meters forward, rotate 180 degrees, and then fly 20 meters forward again to return to its original position.
+
+<------>
+
+user: 
+Excellent, I want to inspect the car from three different points on the X axis. You can inspect the car from the front, back, and right side from 20 meters away on the X-axis. After examining the car from a point, wait three seconds and move to the next point. Finally set yaw to zero.
+
+<------>
+
+assistant: 
+Here's the Python code to inspect the car from three different points on the X-axis:
+
+```python
+import time
+
+# Get the car's position
+car_position = aw.get_position("car")
+
+# Inspect the car from the front (positive X direction)
+front_inspection_point = [car_position[0] + 20, car_position[1], car_position[2]]
+aw.fly_to(front_inspection_point)
+time.sleep(3)
+
+# Inspect the car from the back (negative X direction)
+back_inspection_point = [car_position[0] - 20, car_position[1], car_position[2]]
+aw.fly_to(back_inspection_point)
+time.sleep(3)
+
+# Inspect the car from the right side (positive Y direction)
+right_inspection_point = [car_position[0], car_position[1] + 20, car_position[2]]
+aw.fly_to(right_inspection_point)
+time.sleep(3)
+
+# Set yaw to zero
+aw.set_yaw(0)
+```
+
+Explanation:
+1. The `aw.get_position("car")` function is used to get the current position of the car and store it in the `car_position` variable.
+
+2. The drone moves to the front inspection point, which is 20 meters away from the car on the positive X-axis. The `aw.fly_to()` function is used to fly the drone to the `front_inspection_point` coordinates.
+
+3. The `time.sleep(3)` function is called to wait for 3 seconds after reaching the front inspection point.
+
+4. The drone moves to the back inspection point, which is 20 meters away from the car on the negative X-axis. The `aw.fly_to()` function is used to fly the drone to the `back_inspection_point` coordinates.
+
+5. The `time.sleep(3)` function is called again to wait for 3 seconds after reaching the back inspection point.
+
+6. The drone moves to the right inspection point, which is 20 meters away from the car on the positive Y-axis. The `aw.fly_to()` function is used to fly the drone to the `right_inspection_point` coordinates.
+
+7. The `time.sleep(3)` function is called once more to wait for 3 seconds after reaching the right inspection point.
+
+8. Finally, the `aw.set_yaw(0)` function is used to set the drone's yaw to zero, aligning it with its initial orientation.
+
+This code will make the drone inspect the car from the front, back, and right side, waiting for 3 seconds at each inspection point, and then set the yaw to zero.
+
+<------>
+
+user: 
+Great! I want you to fly to the turbine 1 until 15m distance on the X axis in the negative direction, and reach an altitude of 50 meters. Remember that you are on the front side of the turbine right now. Right after that, lower your altitude to 30 meters and fly to the next turbine until 15-meter distance in the negative direction, and reach an altitude of 50 meters again.
+
+<------>
+
+assistant: 
+Here's the Python code to perform the tasks you described:
+
+```python
+import time
+
+# Get the current position of the drone
+current_position = aw.get_drone_position()
+
+# Get the position of turbine1
+turbine1_position = aw.get_position("turbine1")
+
+# Fly to turbine1 until 15m distance on the negative X-axis and reach an altitude of 50 meters
+turbine1_inspection_point = [turbine1_position[0] - 15, turbine1_position[1], 50]
+aw.fly_to(turbine1_inspection_point)
+
+# Lower the altitude to 30 meters
+aw.fly_to([current_position[0], current_position[1], 30])
+
+# Get the position of turbine2
+turbine2_position = aw.get_position("turbine2")
+
+# Fly to turbine2 until 15m distance on the negative X-axis and reach an altitude of 50 meters
+turbine2_inspection_point = [turbine2_position[0] - 15, turbine2_position[1], 50]
+aw.fly_to(turbine2_inspection_point)
+```
+
+Explanation:
+1. The `aw.get_drone_position()` function is used to get the current position of the drone and store it in the `current_position` variable.
+
+2. The `aw.get_position("turbine1")` function is used to get the position of turbine1 and store it in the `turbine1_position` variable.
+
+3. The drone flies to the inspection point of turbine1, which is 15 meters away from the turbine on the negative X-axis and at an altitude of 50 meters. The `aw.fly_to()` function is used to fly the drone to the `turbine1_inspection_point` coordinates.
+
+4. The drone lowers its altitude to 30 meters using the `aw.fly_to()` function, keeping the same X and Y coordinates as the current position.
+
+5. The `aw.get_position("turbine2")` function is used to get the position of turbine2 and store it in the `turbine2_position` variable.
+
+6. The drone flies to the inspection point of turbine2, which is 15 meters away from the turbine on the negative X-axis and at an altitude of 50 meters. The `aw.fly_to()` function is used to fly the drone to the `turbine2_inspection_point` coordinates.
+
+This code will make the drone fly to turbine1 until it is 15 meters away on the negative X-axis and at an altitude of 50 meters. Then, it will lower its altitude to 30 meters and fly to turbine2 until it is 15 meters away on the negative X-axis and at an altitude of 50 meters again.
+
+<------>
+
+user: 
+Let's inspect this turbine, perform the following tasks in an order, one by one. I want you to move backwards 15 meters on the X axis, wait for 3 seconds and fly back to your first position. After that you'll repeat the process for the backside of the turbine in the following instructions. You should fly 10 meters rightwards, 30 meters forward, 10 meters leftwards and then set yaw to zero to inspect the turbine from the backside. Finally move 10 meters forward, and wait for 3 seconds.
+
+<------>
+
+assistant: 
+Here's the Python code to perform the inspection tasks you described:
+
+```python
+import time
+
+# Get the current position of the drone
+current_position = aw.get_drone_position()
+
+# Move backwards 15 meters on the X-axis
+back_position = [current_position[0] - 15, current_position[1], current_position[2]]
+aw.fly_to(back_position)
+time.sleep(3)
+
+# Fly back to the first position
+aw.fly_to(current_position)
+
+# Fly 10 meters rightwards (positive Y-axis)
+right_position = [current_position[0], current_position[1] + 10, current_position[2]]
+aw.fly_to(right_position)
+
+# Fly 30 meters forward (positive X-axis)
+forward_position = [right_position[0] + 30, right_position[1], right_position[2]]
+aw.fly_to(forward_position)
+
+# Fly 10 meters leftwards (negative Y-axis)
+left_position = [forward_position[0], forward_position[1] - 10, forward_position[2]]
+aw.fly_to(left_position)
+
+# Set yaw to zero to inspect the turbine from the backside
+aw.set_yaw(0)
+
+# Move 10 meters forward (positive X-axis)
+final_position = [left_position[0] + 10, left_position[1], left_position[2]]
+aw.fly_to(final_position)
+time.sleep(3)
+```
+
+Explanation:
+1. The `aw.get_drone_position()` function is used to get the current position of the drone and store it in the `current_position` variable.
+
+2. The drone moves backwards 15 meters on the X-axis using the `aw.fly_to()` function and the coordinates stored in the `back_position` variable.
+
+3. The `time.sleep(3)` function is called to wait for 3 seconds.
+
+4. The drone flies back to its first position using the `aw.fly_to()` function and the coordinates stored in the `current_position` variable.
+
+5. The drone flies 10 meters rightwards (positive Y-axis) using the `aw.fly_to()` function and the coordinates stored in the `right_position` variable.
+
+6. The drone flies 30 meters forward (positive X-axis) using the `aw.fly_to()` function and the coordinates stored in the `forward_position` variable.
+
+7. The drone flies 10 meters leftwards (negative Y-axis) using the `aw.fly_to()` function and the coordinates stored in the `left_position` variable.
+
+8. The `aw.set_yaw(0)` function is used to set the drone's yaw to zero, aligning it to inspect the turbine from the backside.
+
+9. The drone moves 10 meters forward (positive X-axis) using the `aw.fly_to()` function and the coordinates stored in the `final_position` variable.
+
+10. The `time.sleep(3)` function is called again to wait for 3 seconds.
+
+This code will make the drone perform the inspection tasks in the specified order, moving backwards, waiting, flying back to the first position, then flying rightwards, forward, leftwards, setting yaw to zero, moving forward, and waiting again.
+
+<------>
+
+user: 
+Amazing! As a final task, lower your altitude to 25 meters to not to hit the wheel of the turbine and then land the drone 10 meters away from the car on the X-axis.
+
+<------>
+
+assistant: 
+Here's the Python code to perform the final task:
+
+```python
+import time
+
+# Get the current position of the drone
+current_position = aw.get_drone_position()
+
+# Lower the altitude to 25 meters
+lower_position = [current_position[0], current_position[1], 25]
+aw.fly_to(lower_position)
+
+# Get the position of the car
+car_position = aw.get_position("car")
+
+# Calculate the landing position 10 meters away from the car on the X-axis
+landing_position = [car_position[0] + 10, car_position[1], lower_position[2]]
+
+# Fly to the landing position
+aw.fly_to(landing_position)
+
+# Land the drone
+aw.land()
+```
+
+Explanation:
+1. The `aw.get_drone_position()` function is used to get the current position of the drone and store it in the `current_position` variable.
+
+2. The drone lowers its altitude to 25 meters using the `aw.fly_to()` function and the coordinates stored in the `lower_position` variable. This is done to avoid hitting the wheel of the turbine.
+
+3. The `aw.get_position("car")` function is used to get the position of the car and store it in the `car_position` variable.
+
+4. The landing position is calculated by adding 10 meters to the X-coordinate of the car's position and using the same Y-coordinate and the lowered Z-coordinate (25 meters). The result is stored in the `landing_position` variable.
+
+5. The drone flies to the landing position using the `aw.fly_to()` function and the coordinates stored in the `landing_position` variable.
+
+6. Finally, the `aw.land()` function is called to land the drone.
+
+This code will make the drone lower its altitude to 25 meters to avoid hitting the wheel of the turbine, then fly to a position 10 meters away from the car on the X-axis, and finally land at that position.
+
+<------>
+

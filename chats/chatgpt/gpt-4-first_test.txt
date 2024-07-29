@@ -1,0 +1,195 @@
+system: 
+You are an assistant helping me with the AirSim simulator for drones.
+When I ask you to do something, you are supposed to give me Python code that is needed to achieve that task using AirSim and then an explanation of what that code does.
+You are only allowed to use the functions I have defined for you.
+You are not to use any other hypothetical functions that you think might exist.
+You can use simple Python functions from libraries such as math and numpy.
+You are supposed to output the code in a single block and double-check that the output does not contain syntax errors to avoid outputting erroneous code.
+
+<------>
+
+user: 
+move 10 units up
+
+<------>
+
+assistant: 
+```python
+    aw.fly_to([aw.get_drone_position()[0], aw.get_drone_position()[1], aw.get_drone_position()[2]+10])
+    ```
+
+    This code uses the `fly_to()` function to move the drone to a new position that is 10 units up from the current position. It does this by getting the current position of the drone using `get_drone_position()` and then creating a new list with the same X and Y coordinates, but with the Z coordinate increased by 10. The drone will then fly to this new position using `fly_to()`.
+
+<------>
+
+user: 
+Here are some functions you can use to command the drone.
+
+aw.takeoff() - takes off the drone.
+aw.land() - lands the drone.
+aw.get_drone_position() - returns the current position of the drone as a list of 3 floats corresponding to XYZ coordinates.
+aw.fly_to([x, y, z]) - flies the drone to the position specified as a list of three arguments corresponding to X, Y, Z coordinates.
+aw.fly_path(points) - flies the drone along the path specified by the list of points. Each point is again a list of 3 floats corresponding to X, Y, Z coordinates.
+aw.set_yaw(yaw) - sets the yaw of the drone to the specified value in degrees.
+aw.get_yaw() - returns the current yaw of the drone in degrees.
+aw.get_position(object_name): Takes a string as input indicating the name of an object of interest, and returns a list of 3 floats indicating its X,Y,Z coordinates.
+
+A few useful things: 
+Instead of moveToPositionAsync() or moveToZAsync(), you should use the function fly_to() that I have defined for you.
+If you are uncertain about something, you can ask me a clarification question, as long as you specifically identify it saying "Question".
+Here is an example scenario that illustrates how you can ask clarification questions. Let us assume a scene contains two spheres.
+
+Me: Fly to the sphere.
+You: Question - there are two spheres. Which one do you want me to fly to?
+Me: Sphere 1, please.
+
+The following objects are in the scene, and you are to refer to them using these exact names:
+
+turbine1, turbine2, solarpanels, car, crowd, tower1, tower2, tower3.
+
+None of the objects except for the drone itself are movable. Remember that there are two turbines, and three towers. When there are multiple objects of a same type,
+and if I don't specify explicitly which object I am referring to, you should always ask me for clarification. Never make assumptions.
+
+In terms of axis conventions, forward means positive X axis. Right means positive Y axis. Up means positive Z axis.
+
+<------>
+
+assistant: 
+```python
+current_position = aw.get_drone_position()
+aw.fly_to([current_position[0], current_position[1], current_position[2] + 10])
+```
+
+This code first gets the current position of the drone using the `aw.get_drone_position()` function and stores it in the `current_position` variable. The `aw.fly_to()` function is then used to command the drone to fly to a new position. The new position is the same as the current position in the X and Y axes, but 10 units higher in the Z axis. This is achieved by adding 10 to the Z coordinate of the current position.
+
+<------>
+
+user: 
+Take off please.
+
+<------>
+
+assistant: 
+```python
+aw.takeoff()
+```
+
+This code calls the `aw.takeoff()` function, which commands the drone to take off from its current position.
+
+<------>
+
+user: 
+Fly 20 meters up.
+
+<------>
+
+assistant: 
+```python
+current_position = aw.get_drone_position()
+aw.fly_to([current_position[0], current_position[1], current_position[2] + 20])
+```
+
+This code first gets the current position of the drone using the `aw.get_drone_position()` function and stores it in the `current_position` variable. The `aw.fly_to()` function is then used to command the drone to fly to a new position. The new position is the same as the current position in the X and Y axes, but 20 units higher in the Z axis. This is achieved by adding 20 to the Z coordinate of the current position.
+
+<------>
+
+user: 
+Fly 30 meters forward.
+
+<------>
+
+assistant: 
+```python
+current_position = aw.get_drone_position()
+aw.fly_to([current_position[0] + 30, current_position[1], current_position[2]])
+```
+
+This code first gets the current position of the drone using the `aw.get_drone_position()` function and stores it in the `current_position` variable. The `aw.fly_to()` function is then used to command the drone to fly to a new position. The new position is 30 units forward in the X axis (since forward means positive X axis), and the same as the current position in the Y and Z axes. This is achieved by adding 30 to the X coordinate of the current position.
+
+<------>
+
+user: 
+Fly 10 meters to leftwards.
+
+<------>
+
+assistant: 
+```python
+current_position = aw.get_drone_position()
+aw.fly_to([current_position[0], current_position[1] - 10, current_position[2]])
+```
+
+This code first gets the current position of the drone using the `aw.get_drone_position()` function and stores it in the `current_position` variable. The `aw.fly_to()` function is then used to command the drone to fly to a new position. The new position is 10 units to the left in the Y axis (since left means negative Y axis), and the same as the current position in the X and Z axes. This is achieved by subtracting 10 from the Y coordinate of the current position.
+
+<------>
+
+user: 
+Fly to the solar panel. Remember to keep a 30-meter distance on the Z axis.
+
+<------>
+
+assistant: 
+```python
+solar_panel_position = aw.get_position("solarpanels")
+aw.fly_to([solar_panel_position[0], solar_panel_position[1], solar_panel_position[2] + 30])
+```
+
+This code first gets the position of the solar panel using the `aw.get_position()` function and stores it in the `solar_panel_position` variable. The `aw.fly_to()` function is then used to command the drone to fly to a new position. The new position is the same as the solar panel's position in the X and Y axes, but 30 units higher in the Z axis. This is achieved by adding 30 to the Z coordinate of the solar panel's position. This ensures that the drone maintains a 30-meter distance from the solar panel on the Z axis.
+
+<------>
+
+user: 
+Great! Fly to a turbine, keep a 15m distance on the X axis.
+
+<------>
+
+assistant: 
+Question - there are two turbines. Which one do you want me to fly to?
+
+<------>
+
+user: 
+Turbine 1 please.
+
+<------>
+
+assistant: 
+```python
+turbine1_position = aw.get_position("turbine1")
+aw.fly_to([turbine1_position[0] + 15, turbine1_position[1], turbine1_position[2]])
+```
+
+This code first gets the position of turbine1 using the `aw.get_position()` function and stores it in the `turbine1_position` variable. The `aw.fly_to()` function is then used to command the drone to fly to a new position. The new position is 15 units forward in the X axis (since forward means positive X axis) from the turbine1's position, and the same as the turbine1's position in the Y and Z axes. This is achieved by adding 15 to the X coordinate of the turbine1's position. This ensures that the drone maintains a 15-meter distance from turbine1 on the X axis.
+
+<------>
+
+user: 
+Excellent. Now, fly to the turbine 2 and keep a 20m distance on the X-axis.
+
+<------>
+
+assistant: 
+```python
+turbine2_position = aw.get_position("turbine2")
+aw.fly_to([turbine2_position[0] + 20, turbine2_position[1], turbine2_position[2]])
+```
+
+This code first gets the position of turbine2 using the `aw.get_position()` function and stores it in the `turbine2_position` variable. The `aw.fly_to()` function is then used to command the drone to fly to a new position. The new position is 20 units forward in the X axis (since forward means positive X axis) from the turbine2's position, and the same as the turbine2's position in the Y and Z axes. This is achieved by adding 20 to the X coordinate of the turbine2's position. This ensures that the drone maintains a 20-meter distance from turbine2 on the X axis.
+
+<------>
+
+user: 
+As a final task, I want you to hover 5 meters above the car.
+
+<------>
+
+assistant: 
+```python
+car_position = aw.get_position("car")
+aw.fly_to([car_position[0], car_position[1], car_position[2] + 5])
+```
+
+This code first gets the position of the car using the `aw.get_position()` function and stores it in the `car_position` variable. The `aw.fly_to()` function is then used to command the drone to fly to a new position. The new position is the same as the car's position in the X and Y axes, but 5 units higher in the Z axis. This is achieved by adding 5 to the Z coordinate of the car's position. This ensures that the drone hovers 5 meters above the car.
+
+<------>
+

@@ -1,0 +1,108 @@
+user: 
+move 10 units up
+
+<------>
+
+assistant: 
+```python
+    aw.fly_to([aw.get_drone_position()[0], aw.get_drone_position()[1], aw.get_drone_position()[2]+10])
+    ```
+
+    This code uses the `fly_to()` function to move the drone to a new position that is 10 units up from the current position. It does this by getting the current position of the drone using `get_drone_position()` and then creating a new list with the same X and Y coordinates, but with the Z coordinate increased by 10. The drone will then fly to this new position using `fly_to()`.
+
+<------>
+
+user: 
+Here are some functions you can use to command the drone.
+
+aw.takeoff() - takes off the drone.
+aw.land() - lands the drone.
+aw.get_drone_position() - returns the current position of the drone as a list of 3 floats corresponding to XYZ coordinates.
+aw.fly_to([x, y, z]) - flies the drone to the position specified as a list of three arguments corresponding to X, Y, Z coordinates.
+aw.fly_path(points) - flies the drone along the path specified by the list of points. Each point is again a list of 3 floats corresponding to X, Y, Z coordinates.
+aw.set_yaw(yaw) - sets the yaw of the drone to the specified value in degrees.
+aw.get_yaw() - returns the current yaw of the drone in degrees.
+aw.get_position(object_name): Takes a string as input indicating the name of an object of interest, and returns a list of 3 floats indicating its X,Y,Z coordinates.
+
+A few useful things: 
+Instead of moveToPositionAsync() or moveToZAsync(), you should use the function fly_to() that I have defined for you.
+If you are uncertain about something, you can ask me a clarification question, as long as you specifically identify it saying "Question".
+Here is an example scenario that illustrates how you can ask clarification questions. Let us assume a scene contains two spheres.
+
+Me: Fly to the sphere.
+You: Question - there are two spheres. Which one do you want me to fly to?
+Me: Sphere 1, please.
+
+The following objects are in the scene, and you are to refer to them using these exact names:
+
+turbine1, turbine2, solarpanels, car, crowd, tower1, tower2, tower3.
+
+None of the objects except for the drone itself are movable. Remember that there are two turbines, and three towers. When there are multiple objects of a same type,
+and if I don't specify explicitly which object I am referring to, you should always ask me for clarification. Never make assumptions.
+
+In terms of axis conventions, forward means positive X axis. Right means positive Y axis. Up means positive Z axis.
+
+<------>
+
+assistant: 
+Understood. I will be sure to use the functions you provided and ask for clarification if needed. Let's start with flying to one of the objects in the scene.
+
+<------>
+
+user: 
+Take off please.
+
+<------>
+
+assistant: 
+```python
+aw.takeoff()
+```
+
+This code uses the `takeoff()` function to make the drone take off from the ground.
+
+<------>
+
+user: 
+Fly 30 meters up.
+
+<------>
+
+assistant: 
+```python
+aw.fly_to([aw.get_drone_position()[0], aw.get_drone_position()[1], aw.get_drone_position()[2] + 30])
+```
+
+This code uses the `fly_to()` function to move the drone 30 meters up from its current position. It does this by getting the current position of the drone using `get_drone_position()` and then creating a new list with the same X and Y coordinates, but with the Z coordinate increased by 30.
+
+<------>
+
+user: 
+Now I want you to draw a circle with 45 meters radius, you can use the math.cos() and math.sin() functions to calculate the points of the circle. Remember that the drone has a width of 2 meters.
+
+<------>
+
+assistant: 
+```python
+import math
+
+radius = 45
+points = []
+
+for angle in range(0, 361, 5):
+    x = aw.get_drone_position()[0] + radius * math.cos(math.radians(angle))
+    y = aw.get_drone_position()[1] + radius * math.sin(math.radians(angle))
+    z = aw.get_drone_position()[2]
+    points.append([x, y, z])
+
+aw.fly_path(points)
+```
+
+This code uses a loop to generate a list of points that form a circle with a 45-meter radius around the drone's current position. The `math.cos()` and `math.sin()` functions are used to calculate the x and y coordinates of each point on the circle, and the current z-coordinate is used for the z-coordinate of each point.
+
+The list of points is then passed to the `fly_path()` function, which will make the drone fly along the circular path.
+
+Note that the drone has a width of 2 meters, so you may need to adjust the radius or the number of points to ensure the drone doesn't collide with the circle.
+
+<------>
+

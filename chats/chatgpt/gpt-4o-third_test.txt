@@ -1,0 +1,345 @@
+system: 
+You are an assistant helping me with the AirSim simulator for drones.
+When I ask you to do something, you are supposed to give me Python code that is needed to achieve that task using AirSim and then an explanation of what that code does.
+You are only allowed to use the functions I have defined for you.
+You are not to use any other hypothetical functions that you think might exist.
+You can use simple Python functions from libraries such as math and numpy.
+You are supposed to output the code in a single block and double-check that the output does not contain syntax errors to avoid outputting erroneous code.
+
+<------>
+
+user: 
+move 10 units up
+
+<------>
+
+assistant: 
+```python
+    aw.fly_to([aw.get_drone_position()[0], aw.get_drone_position()[1], aw.get_drone_position()[2]+10])
+    ```
+
+    This code uses the `fly_to()` function to move the drone to a new position that is 10 units up from the current position. It does this by getting the current position of the drone using `get_drone_position()` and then creating a new list with the same X and Y coordinates, but with the Z coordinate increased by 10. The drone will then fly to this new position using `fly_to()`.
+
+<------>
+
+user: 
+Here are some functions you can use to command the drone.
+
+aw.takeoff() - takes off the drone.
+aw.land() - lands the drone.
+aw.get_drone_position() - returns the current position of the drone as a list of 3 floats corresponding to XYZ coordinates.
+aw.fly_to([x, y, z]) - flies the drone to the position specified as a list of three arguments corresponding to X, Y, Z coordinates.
+aw.fly_path(points) - flies the drone along the path specified by the list of points. Each point is again a list of 3 floats corresponding to X, Y, Z coordinates.
+aw.set_yaw(yaw) - sets the yaw of the drone to the specified value in degrees.
+aw.get_yaw() - returns the current yaw of the drone in degrees.
+aw.get_position(object_name): Takes a string as input indicating the name of an object of interest, and returns a list of 3 floats indicating its X,Y,Z coordinates.
+
+A few useful things: 
+Instead of moveToPositionAsync() or moveToZAsync(), you should use the function fly_to() that I have defined for you.
+If you are uncertain about something, you can ask me a clarification question, as long as you specifically identify it saying "Question".
+Here is an example scenario that illustrates how you can ask clarification questions. Let us assume a scene contains two spheres.
+
+Me: Fly to the sphere.
+You: Question - there are two spheres. Which one do you want me to fly to?
+Me: Sphere 1, please.
+
+The following objects are in the scene, and you are to refer to them using these exact names:
+
+turbine1, turbine2, solarpanels, car, crowd, tower1, tower2, tower3.
+
+None of the objects except for the drone itself are movable. Remember that there are two turbines, and three towers. When there are multiple objects of a same type,
+and if I don't specify explicitly which object I am referring to, you should always ask me for clarification. Never make assumptions.
+
+In terms of axis conventions, forward means positive X axis. Right means positive Y axis. Up means positive Z axis.
+
+<------>
+
+assistant: 
+```python
+import airsim
+
+# Take off the drone
+aw.takeoff()
+
+# Get the current position of the drone
+current_position = aw.get_drone_position()
+
+# Calculate the new position 10 units up
+new_position = [current_position[0], current_position[1], current_position[2] + 10]
+
+# Fly the drone to the new position
+aw.fly_to(new_position)
+```
+
+Explanation:
+1. `aw.takeoff()`: This command takes off the drone.
+2. `current_position = aw.get_drone_position()`: This retrieves the current position of the drone as a list of three floats representing the X, Y, and Z coordinates.
+3. `new_position = [current_position[0], current_position[1], current_position[2] + 10]`: This calculates the new position by keeping the X and Y coordinates the same and increasing the Z coordinate by 10 units.
+4. `aw.fly_to(new_position)`: This command flies the drone to the new position calculated in the previous step.
+
+<------>
+
+user: 
+I want you to perform multiple tasks in an order, one by one. Take off, fly up 30 meters, and fly 20 meters forward. Rotate the drone 180 degrees and then, fly 20 meters forward to return your original position.
+
+<------>
+
+assistant: 
+```python
+import airsim
+
+# Take off the drone
+aw.takeoff()
+
+# Get the current position of the drone
+current_position = aw.get_drone_position()
+
+# Calculate the new position 30 meters up
+position_up = [current_position[0], current_position[1], current_position[2] + 30]
+
+# Fly the drone 30 meters up
+aw.fly_to(position_up)
+
+# Calculate the new position 20 meters forward
+position_forward = [position_up[0] + 20, position_up[1], position_up[2]]
+
+# Fly the drone 20 meters forward
+aw.fly_to(position_forward)
+
+# Rotate the drone 180 degrees
+current_yaw = aw.get_yaw()
+new_yaw = (current_yaw + 180) % 360
+aw.set_yaw(new_yaw)
+
+# Fly the drone 20 meters forward to return to the original position
+aw.fly_to(position_up)
+```
+
+Explanation:
+1. `aw.takeoff()`: Takes off the drone.
+2. `current_position = aw.get_drone_position()`: Retrieves the current position of the drone.
+3. `position_up = [current_position[0], current_position[1], current_position[2] + 30]`: Calculates the new position 30 meters up.
+4. `aw.fly_to(position_up)`: Flies the drone to the new position 30 meters up.
+5. `position_forward = [position_up[0] + 20, position_up[1], position_up[2]]`: Calculates the new position 20 meters forward.
+6. `aw.fly_to(position_forward)`: Flies the drone 20 meters forward.
+7. `current_yaw = aw.get_yaw()`: Retrieves the current yaw of the drone.
+8. `new_yaw = (current_yaw + 180) % 360`: Calculates the new yaw by adding 180 degrees to the current yaw.
+9. `aw.set_yaw(new_yaw)`: Sets the yaw of the drone to the new yaw (180 degrees rotated).
+10. `aw.fly_to(position_up)`: Flies the drone 20 meters forward to return to the original position.
+
+<------>
+
+user: 
+Excellent, I want to inspect the car from three different points on the X axis. You can inspect the car from the front, back, and right side from 20 meters away on the X-axis. After examining the car from a point, wait three seconds and move to the next point. Finally set yaw to zero.
+
+<------>
+
+assistant: 
+```python
+import airsim
+import time
+
+# Take off the drone
+aw.takeoff()
+
+# Get the position of the car
+car_position = aw.get_position("car")
+
+# Calculate inspection points
+front_position = [car_position[0] + 20, car_position[1], car_position[2]]
+back_position = [car_position[0] - 20, car_position[1], car_position[2]]
+right_position = [car_position[0], car_position[1] + 20, car_position[2]]
+
+# Fly to the front position and wait for 3 seconds
+aw.fly_to(front_position)
+time.sleep(3)
+
+# Fly to the back position and wait for 3 seconds
+aw.fly_to(back_position)
+time.sleep(3)
+
+# Fly to the right position and wait for 3 seconds
+aw.fly_to(right_position)
+time.sleep(3)
+
+# Set yaw to zero
+aw.set_yaw(0)
+```
+
+Explanation:
+1. `aw.takeoff()`: Takes off the drone.
+2. `car_position = aw.get_position("car")`: Retrieves the position of the car.
+3. `front_position = [car_position[0] + 20, car_position[1], car_position[2]]`: Calculates the position 20 meters in front of the car.
+4. `back_position = [car_position[0] - 20, car_position[1], car_position[2]]`: Calculates the position 20 meters behind the car.
+5. `right_position = [car_position[0], car_position[1] + 20, car_position[2]]`: Calculates the position 20 meters to the right of the car.
+6. `aw.fly_to(front_position)`: Flies the drone to the front position.
+7. `time.sleep(3)`: Waits for 3 seconds.
+8. `aw.fly_to(back_position)`: Flies the drone to the back position.
+9. `time.sleep(3)`: Waits for 3 seconds.
+10. `aw.fly_to(right_position)`: Flies the drone to the right position.
+11. `time.sleep(3)`: Waits for 3 seconds.
+12. `aw.set_yaw(0)`: Sets the yaw of the drone to zero.
+
+<------>
+
+user: 
+Great! I want you to fly to the turbine 1 until 15m distance on the X axis in the negative direction, and reach an altitude of 50 meters. Remember that you are on the front side of the turbine right now. Right after that, lower your altitude to 30 meters and fly to the next turbine until 15-meter distance in the negative direction, and reach an altitude of 50 meters again.
+
+<------>
+
+assistant: 
+```python
+import airsim
+
+# Take off the drone
+aw.takeoff()
+
+# Get the position of turbine1
+turbine1_position = aw.get_position("turbine1")
+
+# Calculate the position 15 meters in front of turbine1 and 50 meters altitude
+turbine1_inspect_position = [turbine1_position[0] - 15, turbine1_position[1], 50]
+
+# Fly to the position in front of turbine1 at 50 meters altitude
+aw.fly_to(turbine1_inspect_position)
+
+# Lower the altitude to 30 meters
+turbine1_lower_position = [turbine1_inspect_position[0], turbine1_inspect_position[1], 30]
+aw.fly_to(turbine1_lower_position)
+
+# Get the position of turbine2
+turbine2_position = aw.get_position("turbine2")
+
+# Calculate the position 15 meters in front of turbine2 and 50 meters altitude
+turbine2_inspect_position = [turbine2_position[0] - 15, turbine2_position[1], 50]
+
+# Fly to the position in front of turbine2 at 50 meters altitude
+aw.fly_to(turbine2_inspect_position)
+```
+
+Explanation:
+1. `aw.takeoff()`: Takes off the drone.
+2. `turbine1_position = aw.get_position("turbine1")`: Retrieves the position of turbine1.
+3. `turbine1_inspect_position = [turbine1_position[0] - 15, turbine1_position[1], 50]`: Calculates the position 15 meters in front of turbine1 and at an altitude of 50 meters.
+4. `aw.fly_to(turbine1_inspect_position)`: Flies the drone to the calculated position in front of turbine1 at 50 meters altitude.
+5. `turbine1_lower_position = [turbine1_inspect_position[0], turbine1_inspect_position[1], 30]`: Calculates the position at the same X and Y coordinates but at an altitude of 30 meters.
+6. `aw.fly_to(turbine1_lower_position)`: Lowers the drone's altitude to 30 meters.
+7. `turbine2_position = aw.get_position("turbine2")`: Retrieves the position of turbine2.
+8. `turbine2_inspect_position = [turbine2_position[0] - 15, turbine2_position[1], 50]`: Calculates the position 15 meters in front of turbine2 and at an altitude of 50 meters.
+9. `aw.fly_to(turbine2_inspect_position)`: Flies the drone to the calculated position in front of turbine2 at 50 meters altitude.
+
+<------>
+
+user: 
+Let's inspect this turbine, perform the following tasks in an order, one by one. I want you to move backwards 15 meters on the X axis, wait for 3 seconds and fly back to your first position. After that you'll repeat the process for the backside of the turbine in the following instructions. You should fly 10 meters rightwards, 30 meters forward, 10 meters leftwards and then set yaw to zero to inspect the turbine from the backside. Finally move 10 meters forward, and wait for 3 seconds.
+
+<------>
+
+assistant: 
+```python
+import airsim
+import time
+
+# Take off the drone
+aw.takeoff()
+
+# Get the position of turbine1
+turbine1_position = aw.get_position("turbine1")
+
+# Calculate the position 15 meters in front of turbine1 and 50 meters altitude
+turbine1_inspect_position = [turbine1_position[0] - 15, turbine1_position[1], 50]
+
+# Fly to the position in front of turbine1 at 50 meters altitude
+aw.fly_to(turbine1_inspect_position)
+
+# Move backwards 15 meters on the X axis
+backwards_position = [turbine1_inspect_position[0] + 15, turbine1_inspect_position[1], turbine1_inspect_position[2]]
+aw.fly_to(backwards_position)
+
+# Wait for 3 seconds
+time.sleep(3)
+
+# Fly back to the first position
+aw.fly_to(turbine1_inspect_position)
+
+# Move 10 meters rightwards
+right_position = [turbine1_inspect_position[0], turbine1_inspect_position[1] + 10, turbine1_inspect_position[2]]
+aw.fly_to(right_position)
+
+# Move 30 meters forward
+forward_position = [right_position[0] + 30, right_position[1], right_position[2]]
+aw.fly_to(forward_position)
+
+# Move 10 meters leftwards
+left_position = [forward_position[0], forward_position[1] - 10, forward_position[2]]
+aw.fly_to(left_position)
+
+# Set yaw to zero to inspect the turbine from the backside
+aw.set_yaw(0)
+
+# Move 10 meters forward
+final_position = [left_position[0] + 10, left_position[1], left_position[2]]
+aw.fly_to(final_position)
+
+# Wait for 3 seconds
+time.sleep(3)
+```
+
+Explanation:
+1. `aw.takeoff()`: Takes off the drone.
+2. `turbine1_position = aw.get_position("turbine1")`: Retrieves the position of turbine1.
+3. `turbine1_inspect_position = [turbine1_position[0] - 15, turbine1_position[1], 50]`: Calculates the position 15 meters in front of turbine1 and at an altitude of 50 meters.
+4. `aw.fly_to(turbine1_inspect_position)`: Flies the drone to the calculated position in front of turbine1 at 50 meters altitude.
+5. `backwards_position = [turbine1_inspect_position[0] + 15, turbine1_inspect_position[1], turbine1_inspect_position[2]]`: Calculates the position 15 meters backwards on the X axis.
+6. `aw.fly_to(backwards_position)`: Flies the drone to the backwards position.
+7. `time.sleep(3)`: Waits for 3 seconds.
+8. `aw.fly_to(turbine1_inspect_position)`: Flies the drone back to the first position.
+9. `right_position = [turbine1_inspect_position[0], turbine1_inspect_position[1] + 10, turbine1_inspect_position[2]]`: Calculates the position 10 meters rightwards.
+10. `aw.fly_to(right_position)`: Flies the drone to the right position.
+11. `forward_position = [right_position[0] + 30, right_position[1], right_position[2]]`: Calculates the position 30 meters forward.
+12. `aw.fly_to(forward_position)`: Flies the drone to the forward position.
+13. `left_position = [forward_position[0], forward_position[1] - 10, forward_position[2]]`: Calculates the position 10 meters leftwards.
+14. `aw.fly_to(left_position)`: Flies the drone to the left position.
+15. `aw.set_yaw(0)`: Sets the yaw to zero to inspect the turbine from the backside.
+16. `final_position = [left_position[0] + 10, left_position[1], left_position[2]]`: Calculates the position 10 meters forward.
+17. `aw.fly_to(final_position)`: Flies the drone to the final position.
+18. `time.sleep(3)`: Waits for 3 seconds.
+
+<------>
+
+user: 
+Amazing! As a final task, lower your altitude to 25 meters to not to hit the wheel of the turbine and then land the drone 10 meters away from the car on the X-axis.
+
+<------>
+
+assistant: 
+```python
+import airsim
+
+# Lower the altitude to 25 meters
+lower_altitude_position = [final_position[0], final_position[1], 25]
+aw.fly_to(lower_altitude_position)
+
+# Get the position of the car
+car_position = aw.get_position("car")
+
+# Calculate the landing position 10 meters away from the car on the X-axis
+landing_position = [car_position[0] + 10, car_position[1], car_position[2]]
+
+# Fly to the landing position
+aw.fly_to(landing_position)
+
+# Land the drone
+aw.land()
+```
+
+Explanation:
+1. `lower_altitude_position = [final_position[0], final_position[1], 25]`: Calculates the position at the same X and Y coordinates as the final position but at an altitude of 25 meters.
+2. `aw.fly_to(lower_altitude_position)`: Lowers the drone's altitude to 25 meters to avoid hitting the turbine wheel.
+3. `car_position = aw.get_position("car")`: Retrieves the position of the car.
+4. `landing_position = [car_position[0] + 10, car_position[1], car_position[2]]`: Calculates the landing position 10 meters away from the car on the X-axis.
+5. `aw.fly_to(landing_position)`: Flies the drone to the calculated landing position.
+6. `aw.land()`: Lands the drone.
+
+<------>
+
