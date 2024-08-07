@@ -1,4 +1,4 @@
-# Prompting Large Language Models for Aerial Navigation
+## Prompting Large Language Models for Aerial Navigation
 
 Research repository based on Microsoft's recent [study](https://www.microsoft.com/en-us/research/uploads/prod/2023/02/ChatGPT___Robotics.pdf); comprises findings on large language model-enhanced visual simultaneous localization and mapping for robotics tasks and motion planning.
 
