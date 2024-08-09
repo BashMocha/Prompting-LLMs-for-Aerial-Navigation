@@ -37,16 +37,12 @@ git clone https://github.com/CheesyFrappe/Prompting-LLMs-for-Aerial-Navigation.g
 - Execute the AirSim simulation by running ```.\run.bat``` from the simulation folder.
 - Once the simulation is up and running, run the source file for the model being used.
 ```
-python chatgpt_airsim.py \
-  --testname first_test
-  --model gpt-3.5-turbo
+python chatgpt_airsim.py --testname first_test --model gpt-3.5-turbo
 ```
 - The recording feature is enabled by default in this project. The trajectories can be found in `C:\Users\<username>\Documents\AirSim\`.
 - Execute ```evaluation.py``` to obtain the results and plot the trajectories.
 ```
-python evaluation.py \
-  --reference_path ../dataset/first_test.txt
-  --predicted_path <path-to-predicted-trajectory>
+python evaluation.py --reference_path ../dataset/first_test.txt --predicted_path <path-to-predicted-trajectory>
 ```
 
 
