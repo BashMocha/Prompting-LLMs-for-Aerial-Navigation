@@ -1,4 +1,4 @@
-name: chatgpt
+name: llm-env
 channels:
   - defaults
 dependencies:
