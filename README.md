@@ -3,6 +3,7 @@
 
 Emirhan Balcı*, Barış Ata, Mehmet Sarıgül
 
+[Demonstration](https://youtu.be/A9pKyYRqVNo)
 ## Abstract
 Robots are becoming more prevalent and consequently utilized in numerous fields due to the latest advancements in artificial intelligence. Recent studies have shown promise in the human-robot interaction where non-experts are capable of handling the collaboration with robots. Whereas traditional interaction approaches are compact and rigid, natural language communication offers a coherent approach that allows interaction to be more versatile. The utilization of large language models (LLMs) makes it possible for non-expert users to take place in human-robot communications and manipulate robots to perform complex tasks such as aerial navigation, obstacle avoidance, and pathfinding. In this paper, we performed an experimental study to compare the performances of LLMs based on the generated source code from prompts to perform aerial navigation tasks in a simulated environment. The few-shot prompting technique is applied to LLMs such as ChatGPT, Gemini, Mistral, and Claude on Microsoft's AirSim drone simulation. We defined three test cases based on UAV-based aerial navigation, specified model prompts for each test, and extracted ground-truth trajectories for the test cases. Finally, we tested the models on the simulator with predefined prompts to compare the predicted trajectories with ground truth. Our findings indicate that no single model surpasses all test cases, using LLMs for aerial navigation remains a challenging task in robotic applications.
 
