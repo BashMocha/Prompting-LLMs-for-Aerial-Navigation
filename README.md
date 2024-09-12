@@ -1,7 +1,7 @@
 ## Prompting Large Language Models for Aerial Navigation
 <b>Official implementation of the [UBMK 2024](https://ubmk.org.tr/) paper.</b>
 
-Emirhan Balcı*, Barış Ata, Mehmet Sarıgül
+Emirhan Balcı*, Mehmet Sarıgül, Barış Ata
 
 https://github.com/user-attachments/assets/98fd3670-67ee-4d0e-8e2f-89cab301a495
 
